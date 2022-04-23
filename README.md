@@ -4,4 +4,4 @@ A simple program that lets you draw two graphs and see if they are isomorphic. D
 
 This is a work in progress. I intend to add animation to smoothly deform the right graph to equal the left graph if they are isomorphic. I would also like to make the GUI nicer. 
 
-Requires tkinter, matplotlib, numPy, and networkx.
+Requires tkinter, matplotlib, numPy, keyboard, and networkx.

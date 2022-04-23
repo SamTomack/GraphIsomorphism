@@ -3,6 +3,8 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import networkx as nx
 import numpy as np
 import tkinter as tk
+import keyboard as kb
+import time
 
 fig = plt.figure()
 ax = fig.add_subplot(111)
@@ -18,10 +20,10 @@ G1 = nx.Graph()
 G2 = nx.Graph()
 G1Nodes = 0
 isG1NodeSelected = False
-G1SelectedNode = 0
+G1SelectedNode = None
 G2Nodes = 0
 isG2NodeSelected = False
-G2SelectedNode = 0
+G2SelectedNode = None
 
 def veryClose(G ,node1, node2):
     pos1 = list(G.nodes[node1].values())
@@ -69,7 +71,7 @@ def ondblclick(event):
             G1Nodes += 1
             G1.add_node(G1Nodes, pos = (X, Y))
             pos = nx.get_node_attributes(G1, 'pos')
-            nx.draw(G1, pos, with_labels= True)
+            nx.draw(G1, pos , with_labels= True)
 
         fig.canvas.draw()
 
@@ -77,8 +79,16 @@ def ondblclick(event):
         for i in range(1, G1Nodes+1):
             if XYveryClose(G1, i, (X,Y)):
                 if isG1NodeSelected == False:
+                    color_map = []
+                    for node in G1:
+                        if node == i:
+                            color_map.append('blue')
+                        else:
+                            color_map.append('#1f78b4')
                     isG1NodeSelected = True
                     G1SelectedNode = i
+                    pos = nx.get_node_attributes(G1, 'pos')
+                    nx.draw(G1, pos, node_color = color_map, with_labels=True)
                 else:
                     G1.add_edge(G1SelectedNode, i)
                     if G1SelectedNode == i:
@@ -86,6 +96,12 @@ def ondblclick(event):
                     isG1NodeSelected = False
                     pos = nx.get_node_attributes(G1, 'pos')
                     nx.draw(G1, pos, with_labels=True)
+            elif kb.is_pressed(' '):
+                isG1NodeSelected = False
+                G1SelectedNode = None
+                pos = nx.get_node_attributes(G1, 'pos')
+                nx.draw(G1, pos, with_labels=True)
+
         fig.canvas.draw()
 cid = fig.canvas.mpl_connect('button_press_event', ondblclick)
 
@@ -125,8 +141,16 @@ def ondblclick2(event):
         for i in range(1, G2Nodes+1):
             if XYveryClose(G2, i, (X,Y)):
                 if isG2NodeSelected == False:
+                    color_map = []
+                    for node in G2:
+                        if node == i:
+                            color_map.append('#A52A2A')
+                        else:
+                            color_map.append('red')
                     isG2NodeSelected = True
                     G2SelectedNode = i
+                    pos = nx.get_node_attributes(G2, 'pos')
+                    nx.draw(G2, pos, node_color=color_map, with_labels=True)
                 else:
                     G2.add_edge(G2SelectedNode, i)
                     if G2SelectedNode == i:
@@ -134,6 +158,11 @@ def ondblclick2(event):
                     isG2NodeSelected = False
                     pos = nx.get_node_attributes(G2, 'pos')
                     nx.draw(G2, pos, node_color = 'red', with_labels=True)
+            elif kb.is_pressed(' '):
+                isG2NodeSelected = False
+                G2SelectedNode = None
+                pos = nx.get_node_attributes(G2, 'pos')
+                nx.draw(G2, pos, node_color = 'red', with_labels=True)
         fig2.canvas.draw()
 cid = fig2.canvas.mpl_connect('button_press_event', ondblclick2)
 
@@ -157,4 +186,3 @@ button.pack(side = tk.LEFT)
 button.place(x = 875, y = 0)
 
 window.mainloop()
-
